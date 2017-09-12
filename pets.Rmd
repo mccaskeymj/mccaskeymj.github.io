@@ -1,0 +1,12 @@
+---
+title: "Pets"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I own one pet(s).
+
+Brandy is a dog. She is better than your dog.

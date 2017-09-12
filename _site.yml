@@ -1,8 +1,11 @@
 name: "my-website"
 output_dir: "."
 navbar:
-  title: "My Page"
+  title: "McCaskey Forever"
   left:
     - text: "Home"
       href: index.html
-    - text: "Place-holder"
+    - text: "Pets"
+      href: pets.html
+    - text: "Recent Discoveries"
+      href: discovery.html
