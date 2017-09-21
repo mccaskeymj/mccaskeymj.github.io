@@ -15,3 +15,4 @@ library(knitr)
 knitr::include_graphics("./img/Me.jpg")
 ```
 
+Here's a link to my [linkedin](https://www.linkedin.com/in/matt-mccaskey-b4882b14b/) account.

@@ -8,5 +8,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 I own one pet(s).
+```{r, echo=FALSE}
+library(knitr)
+knitr::include_graphics("./img/Brandy.jpg")
+```
 
 Brandy is a dog. She is better than your dog.
