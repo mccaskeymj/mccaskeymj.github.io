@@ -67,7 +67,6 @@ h6 {
 }
 </style>
 
-<link rel="stylesheet" href="matt.css" type="text/css" />
 
 </head>
 
@@ -205,11 +204,11 @@ $(document).ready(function () {
 
 
 <div id="introduction" class="section level1">
-<h1>Introduction</h1>
+<h1><span class="header-section-number">1</span> Introduction</h1>
 <p>This is an exploration of bicycle-sharing data in the city of Seattle, WA (USA) from October 2014 - August 2016. I hope to eventually combine this data with other forms of ride-sharing and transportation in the city, but this will be the first step.</p>
 <p>Time to get started!</p>
 <div id="loading-necessary-packages" class="section level2">
-<h2>Loading Necessary Packages</h2>
+<h2><span class="header-section-number">1.1</span> Loading Necessary Packages</h2>
 <pre class="r"><code># For data manipulation and tidying
 library(dplyr)
 library(lubridate)
@@ -229,7 +228,7 @@ library(caret)
 library(readr)</code></pre>
 </div>
 <div id="importing-data" class="section level2">
-<h2>Importing Data</h2>
+<h2><span class="header-section-number">1.2</span> Importing Data</h2>
 <p>All of the data can be downloaded from the bicycle-sharing service website or from <a href="https://www.kaggle.com/pronto/cycle-share-dataset">Kaggle</a>. This project contains 3 data sets and I’ll import and inspect each data file independently.</p>
 <pre class="r"><code>station &lt;- read.csv(file = &quot;station.csv&quot;, header = TRUE, 
     stringsAsFactors = FALSE)
@@ -242,7 +241,7 @@ weather &lt;- read.csv(file = &quot;weather.csv&quot;, header = TRUE,
 <p>Ok, let’s take a look at each of these data files.</p>
 </div>
 <div id="data-structures-and-variables" class="section level2">
-<h2>Data Structures and Variables</h2>
+<h2><span class="header-section-number">1.3</span> Data Structures and Variables</h2>
 <p><span class="math inline">\(\bf station\)</span></p>
 <pre class="r"><code>str(station)</code></pre>
 <pre><code>&#39;data.frame&#39;:   58 obs. of  9 variables:
@@ -341,9 +340,9 @@ weather &lt;- read.csv(file = &quot;weather.csv&quot;, header = TRUE,
 </div>
 </div>
 <div id="data-visualizations" class="section level1">
-<h1>Data Visualizations</h1>
+<h1><span class="header-section-number">2</span> Data Visualizations</h1>
 <div id="exploring-the-stations-dataset" class="section level2">
-<h2>Exploring the Stations Dataset</h2>
+<h2><span class="header-section-number">2.1</span> Exploring the Stations Dataset</h2>
 <p>Since the “Stations” dataset was the first one I imported, let’s start with a little exploration there. First of all, how many unique stations are we dealing with?</p>
 <pre class="r"><code>station %&gt;% summarise(n_distinct(station_id))</code></pre>
 <pre><code>  n_distinct(station_id)
@@ -454,9 +453,6 @@ trip_2 %&gt;%
 </div>
 </div>
 
-
-
-<p>This text should be at the bottom of every page</p>
 
 
 
