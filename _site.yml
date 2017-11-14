@@ -9,6 +9,9 @@ navbar:
       href: pets.html
     - text: "Bike Project"
       href: bike.html
+  right:
+    - icon: fa-github fa-lg
+      href: https://github.com/mccaskeymj/mccaskeymj.github.io/ 
 output:
   html_document:
     include:

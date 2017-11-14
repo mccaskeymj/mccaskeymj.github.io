@@ -427,3 +427,28 @@ start_date_ym %>%
 
 So it looks like usage is relatively consistent across seasons, at least as far as the number of trips are concerned.
 
+```{r}
+start_date_ym %>%
+  group_by(Hour = hour(start_dt), Season, wd) %>%
+  summarize(N = n()) %>%
+  ggplot(aes(x = Hour, y = N, color = Season, group = Season)) + 
+  geom_point() + 
+  geom_line() +
+  theme_bw() + 
+  labs(x = "Hour of Day", y = "Number of Trips") +
+  facet_wrap(~ wd, ncol = 2)
+```
+
+```{r}
+start_date_ym %>%
+  filter(usertype != "") %>%
+  group_by(ym, Season, usertype) %>%
+  summarize(N = n()) %>%
+  ggplot(aes(x = ym, y = N, color = Season, group = usertype)) + 
+  geom_point(aes(shape = usertype, size = 2)) + 
+  geom_line() + 
+  theme_bw() + 
+  labs(y = "Total Number of Trips per Month", x = "Date")
+
+```
+
