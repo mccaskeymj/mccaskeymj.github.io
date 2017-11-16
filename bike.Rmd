@@ -482,7 +482,7 @@ start_date_ym <- start_date_ym %>%
     labs(x = "Trip Duration (minutes)", y = "Number of Trips") + 
     geom_vline(data = vline, aes(xintercept = xint), linetype = "dashed") + 
     scale_fill_manual(values = c("pink", "lightblue")) + 
-    guides(fill = FALSE)
+    guides(fill = FALSE) 
 ```
 
 Ok, so our members are pretty good about making sure that they return their bike before they incur extra charges, but the short-term pass holders frequently go over their time limit. I wonder how the cost of a trip varies for members and pass holders. Let’s try to calculate the cost of a trip.
@@ -509,7 +509,8 @@ start_date_ym %>%
     geom_histogram(binwidth = 1) + 
     facet_grid(. ~ usertype) + 
     scale_fill_manual(values = c("pink", "lightblue")) + 
-    xlim(0, 20)
+    xlim(0, 20) + 
+    labs( x = "Additional Fees ($)", y = "Number of Trips")
 ```
 Looks like short-term pass holders (who are already paying a higher price per day of biking), are also paying lots of extra fees. This could be because they are unfamiliar with the pricing structure and don’t realize they need to return their bike to a station within 30 minutes without getting charged. It is also possible that short-term users may be tourists who don’t know their way around as easily, and thus can’t find their way to a station within the time limit.
 
