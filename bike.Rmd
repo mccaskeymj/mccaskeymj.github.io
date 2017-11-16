@@ -452,3 +452,18 @@ start_date_ym %>%
 
 ```
 
+
+
+```{r, message=FALSE }
+start_date_ym %>%
+  filter(usertype != "") %>%
+  group_by(tripduration,trip_id , usertype) %>%
+  summarize(N = n()) %>%
+  ggplot(aes(x = tripduration/60, fill = usertype, color = usertype), group = usertype) + 
+    geom_histogram(binwidth = 2) +
+    xlim(0,60) + 
+    facet_grid(. ~ usertype) +
+    labs(x = "Trip Duration (minutes)", y = "Number of Trips") + 
+    geom_vline(xintercept = 45, linetype = "dotted")
+```
+
