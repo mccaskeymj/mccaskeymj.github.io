@@ -427,7 +427,10 @@ start_date_ym %>%
 
 So it looks like usage is relatively consistent across seasons, at least as far as the number of trips are concerned.
 
-```{r}
+
+## Number of Trips by Time of Day
+How about time of day? Are people using these around commuting times during the week and later on weekends?
+```{r, echo = FALSE}
 start_date_ym %>%
   group_by(Hour = hour(start_dt), Season, wd) %>%
   summarize(N = n()) %>%
@@ -439,7 +442,14 @@ start_date_ym %>%
   facet_wrap(~ wd, ncol = 2)
 ```
 
-```{r}
+Wow, looks like regardless of the season, people are commuting to/from work using this service (there’s a spike between 8 and 10 AM and another between 4 and 7 PM Monday through Friday). But the weekends seem to be popular between 10 AM and 10 PM.
+
+## Number of Trips by Member Type
+I wonder if different types of members (those who have a membership vs. those that bought a 24 hour or 3 day pass) vary in the number of trips they take.
+
+If I were to guess, I’d think the short-term passes would be ideal for tourists or people looking for a quick weekend trip, whereas members may be more likely to continue using the service year-round. Let’s check out my assumptions by plotting, once again colored by season.
+
+```{r, echo=FALSE}
 start_date_ym %>%
   filter(usertype != "") %>%
   group_by(ym, Season, usertype) %>%
@@ -452,18 +462,66 @@ start_date_ym %>%
 
 ```
 
+Surprisingly (to me, at least), different types of users seem to follow similar patterns of usage. Spring and Summer are definitely the most popular times for anyone to ride a bike in the Seattle area.
 
+## Trip Duration by Member Type
+While it may seem that the trip duration shouldn’t vary widely by member type, a quick look at Pronto!’s pricing structure may make you reconsider that assumption. You see, while you have to purchase either an annual membership ($85/year), a 24-Hour Pass ($8) or a 3-Day Pass ($16) there is still a cap on the duration of your trip. For members, any ride under 45 minutes is free, but any ride going over 45 minutes will incur a fee of $2 for every additional 30 minutes. For short-term users, any ride under 30 minutes is free, but going over that time limit would cost you an additional $2 for the first 30 minutes and $5 for each additional 30 minutes after that!
 
-```{r, message=FALSE }
-start_date_ym %>%
+Let’s see if these time limits cause differing behaviors in our users.
+
+```{r, message=FALSE, echo=FALSE }
+vline <- data.frame(usertype = c("Member", "Short-Term Pass Holder"), xint = c(45, 30))
+start_date_ym <- start_date_ym %>%
   filter(usertype != "") %>%
-  group_by(tripduration,trip_id , usertype) %>%
-  summarize(N = n()) %>%
-  ggplot(aes(x = tripduration/60, fill = usertype, color = usertype), group = usertype) + 
+  mutate(tripduration_min = tripduration/60)
+
+  ggplot(start_date_ym,aes(x = tripduration_min, fill = usertype)) + 
     geom_histogram(binwidth = 2) +
     xlim(0,60) + 
     facet_grid(. ~ usertype) +
     labs(x = "Trip Duration (minutes)", y = "Number of Trips") + 
-    geom_vline(xintercept = 45, linetype = "dotted")
+    geom_vline(data = vline, aes(xintercept = xint), linetype = "dashed") + 
+    scale_fill_manual(values = c("pink", "lightblue")) + 
+    guides(fill = FALSE)
+```
+
+Ok, so our members are pretty good about making sure that they return their bike before they incur extra charges, but the short-term pass holders frequently go over their time limit. I wonder how the cost of a trip varies for members and pass holders. Let’s try to calculate the cost of a trip.
+
+```{r}
+start_date_ym <- start_date_ym %>% mutate(cost = ifelse(usertype == "Member" & 
+    tripduration_min <= 45, 0, ifelse(usertype == "Member" & tripduration_min > 
+    45 & tripduration_min <= 75, 2, ifelse(usertype == "Member" & 
+    tripduration_min > 75, (2 + 2 * ceiling((tripduration_min - 75)/30)), 
+    ifelse(usertype == "Short-Term Pass Holder" & tripduration_min <= 
+        30, 0, ifelse(usertype == "Short-Term Pass Holder" & 
+        tripduration_min > 30 & tripduration_min < 60, 2, ifelse(usertype == 
+        "Short-Term Pass Holder" & tripduration_min > 60, (2 + 
+        5 * ceiling((tripduration_min - 60)/30)), NA)))))))
+```
+
+That was a complicated nested if/else statement! Let’s see how much these folks are paying in additional fees!
+
+```{r, echo=FALSE}
+start_date_ym %>%
+  filter(usertype !="") %>%
+  filter(cost > 0) %>%
+  ggplot(aes(x = cost, fill = usertype)) + 
+    geom_histogram(binwidth = 1) + 
+    facet_grid(. ~ usertype) + 
+    scale_fill_manual(values = c("pink", "lightblue")) + 
+    xlim(0, 20)
+```
+Looks like short-term pass holders (who are already paying a higher price per day of biking), are also paying lots of extra fees. This could be because they are unfamiliar with the pricing structure and don’t realize they need to return their bike to a station within 30 minutes without getting charged. It is also possible that short-term users may be tourists who don’t know their way around as easily, and thus can’t find their way to a station within the time limit.
+
+## Member Demographics
+We only seem to have age and gender information about people who have an annual Pronto! membership, so we can at least take a look at what types of people use this service.
+
+Let’s look first at age.
+```{r}
+trip_2$usertype <- as.factor(trip_2$usertype)
+trip_age <- trip_2 %>% mutate(age = year(start_dt) - birthyear)
+
+hist(trip_age$age, main = "Member Age", xlab = "Number of Riders", 
+    col = "#56B4E9", breaks = 25)
 ```
 
