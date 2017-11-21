@@ -8,7 +8,7 @@ navbar:
     - text: "Pets"
       href: pets.html
     - text: "Bike Project"
-      href: bike.html
+      href: Bike-gate.html
   right:
     - icon: fa-github fa-lg
       href: https://github.com/mccaskeymj/mccaskeymj.github.io/ 
