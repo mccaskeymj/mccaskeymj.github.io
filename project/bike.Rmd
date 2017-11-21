@@ -3,13 +3,15 @@ title: "Bike Data"
 author: "Matt McCaskey"
 date: '`r format(Sys.time(), "%B %d, %Y")`'
 output: bookdown::html_document2
-
+bibliography: packages.bib
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,comment = NA,fig.align = "center")
 library(readr)
-```
+``` 
+
+
 # Introduction
 
 This is an exploration of bicycle-sharing data in the city of Seattle, WA (USA) from October 2014 - August 2016. I hope to eventually combine this data with other forms of ride-sharing and transportation in the city, but this will be the first step.
@@ -17,7 +19,7 @@ This is an exploration of bicycle-sharing data in the city of Seattle, WA (USA) 
 Time to get started!
 
 ## Loading Necessary Packages
-```{r, message=FALSE}
+```{r Loading Necessary Packages, message=FALSE}
 # For data manipulation and tidying
 library(dplyr)
 library(lubridate)
@@ -526,3 +528,19 @@ hist(trip_age$age, main = "Member Age", xlab = "Number of Riders",
     col = "#56B4E9", breaks = 25)
 ```
 
+
+
+
+
+
+```{r, echo = FALSE, results = "hide"}
+PackagesUsed <- c("ggplot2", "bookdown", "dplyr")
+# Write bib information
+knitr::write_bib(PackagesUsed, file = "./packages.bib")
+# Load packages
+lapply(PackagesUsed, library, character.only = TRUE)
+```
+
+This project was made possible with `dplyr` by @R-dplyr, `ggplot2` by @R-ggplot2, and `bookdown` by @R-bookdown.
+
+## References
