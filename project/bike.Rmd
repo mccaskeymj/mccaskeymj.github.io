@@ -499,10 +499,102 @@ trip_age <- trip_2 %>% mutate(age = year(start_dt) - birthyear)
 hist(trip_age$age, main = "Member Age", xlab = "Number of Riders", 
     col = "#56B4E9", breaks = 25)
 ```
+My first instinct here is to say “Wow! There’s a lot of 20 and 30-somethings that use this service!” But this figure (and these data) may be a little misleading. You see, we don’t have any sort of Rider ID number, meaning we can’t take “individual activity level” into account. So we can’t tell if the tallest spike is because 5 very athletic 28-year-olds went on 4,000 trips each, or if 100 people went on 200 trips each, or if there were 20,000 28-year-olds who each only used the service once.
 
+The same problem would arise if we looked at gender, so I’m just going to move beyond demographics.
 
+## Exploring the Weather Dataset
 
+Now that I’ve visualized all that I can think of in terms of the “trips” dataset, it’s time to take a brief look at the weather dataset.
 
+Let’s get a quick reminder of what we’re looking at here.
+
+```{r}
+glimpse(weather)
+```
+Great, let’s change the Date variable to a POSIXct object, and make the “Events” variable factors.
+
+```{r}
+# Adjusting the Date Variable
+weather$Date <- mdy(weather$Date)
+
+# Adjusting the Events Variable
+weather$Events <- as.factor(weather$Events)
+```
+
+Great. Now how many weather events are there?
+
+```{r}
+levels(weather$Events)
+```
+
+Wow! So mostly combinations of rain…
+
+Let’s combine a few of these things that seem to represent the same event.
+
+```{r}
+weather$Events <- gsub("Fog , Rain|Fog-Rain", "Fog-Rain", weather$Events)
+weather$Events <- gsub("Rain , Snow|Rain-Snow", "Rain-Snow", 
+    weather$Events)
+weather$Events <- gsub("Rain , Thunderstorm|Rain-Thunderstorm", 
+    "Rain-TS", weather$Events)
+
+weather$Events <- as.factor(weather$Events)
+```
+
+Where else does this dataset need to be cleaned up? Let’s look for any missing values.
+
+```{r}
+summary(weather)
+```
+
+Ok, so we have one NA for “Mean_Temperature_F”, “Max_Gust_Speed_MPH” seems to be represented as a character vector because it has “-” representing NA values, and we have 361 unlabelled Events.
+
+Max Gust Speed should be the easiest one to fix, so we’ll start there.
+
+```{r}
+weather$Max_Gust_Speed_MPH <- gsub("-", 0, weather$Max_Gust_Speed_MPH)
+
+weather$Max_Gust_Speed_MPH <- as.numeric(weather$Max_Gust_Speed_MPH)
+```
+
+Great! We changed any absent values for Maximum Gust Speed to 0 MPH and changed the variable type to a number. Uh oh, looks like there are still 185 NA values for Max Gust Speed. That’s a lot to try to replace. I would normally suggest generating a model that could try to predict those values based on other known values, but for now, we’ll just leave it alone.
+
+Since there is only one missing Mean Temperature, it seems the easiest way to fill in the hole is to look up what the average temperature was that day. *Note: I certainly would not recommend this if it were any more than one missing value*
+
+```{r}
+weather[which(is.na(weather$Mean_Temperature_F)), 1]
+```
+
+Ok, so we’re looking for the Mean Temperature on February 14, 2016 in the zipcode 98101 (according to dataset documentation). Looks like the mean temperature that day was 50 degrees F.
+
+Time to substitute in that value.
+
+```{r}
+weather[490, "Mean_Temperature_F"] <- "50"
+```
+
+Perfect. Now what to do with the unlabelled “Event” categories. The dataset “ReadMe” file from Pronto! doesn’t include any information about this weather dataset. The only thing I can think to do is refer to the Event as “Other”.
+
+```{r}
+weather$Events <- gsub("^$", "Other", weather$Events)
+weather$Events <- as.factor(weather$Events)
+```
+
+Ok, we’re in good shape. Now to do a few quick visualizations.
+
+## Temperature
+```{r fig15, fig.cap="Minimum"}
+weather %>%
+  ggplot(aes(Date,Min_TemperatureF)) + 
+  geom_line() + 
+  theme_bw() + 
+  labs(y="Minimum Temperature (F)", x = "Date")
+```
+
+```{r fig16, fig.cap = "Mean"}
+
+```
 
 
 ```{r, echo = FALSE, results = "hide"}
