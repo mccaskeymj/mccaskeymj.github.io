@@ -9,6 +9,8 @@ navbar:
       href: pets.html
     - text: "Bike Project"
       href: Bike-gate.html
+    - text: "Presentation"
+      href: FinalPres.Rpres 
   right:
     - icon: fa-github fa-lg
       href: https://github.com/mccaskeymj/mccaskeymj.github.io/ 
