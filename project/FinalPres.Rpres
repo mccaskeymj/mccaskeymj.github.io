@@ -24,7 +24,7 @@ library(grid)
 library(gridExtra)
 ```
 
-"Interesting"" Plots
+"Interesting" Plots
 ========================================================
 
 ```{r, echo = FALSE, include = FALSE}

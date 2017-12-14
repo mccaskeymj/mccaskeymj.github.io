@@ -3,3 +3,4 @@ output: html_document
 ---
 
 * [Bike Project](./project/bike.html)
+* [Final Talk](./project/FinalTalk.html)

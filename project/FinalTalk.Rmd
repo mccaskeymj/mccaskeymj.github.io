@@ -1,0 +1,135 @@
+---
+title: "Final Presentation"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introduction
+
+I rigorously collected and fabricated data on my own presentation.
+
+This is a brief compilation of my most eye-opening findings.
+
+
+![](me.jpg)
+```{r, include = FALSE, message = FALSE}
+library(datasets)
+library(agridat)
+library(cluster.datasets)
+library(ggplot2)
+library(ggthemes)
+library(png)
+library(grid)
+library(gridExtra)
+```
+## "Interesting" Plots
+
+```{r, echo = FALSE, include = FALSE}
+void <- data.frame(x = c(0,3))
+p1 <- ggplot(data.frame(x = void), aes(x = x)) +
+  xlim(0,3) + 
+  ylim(0,2) +
+  geom_rect(xmin = 0, xmax = 3, ymin = 0, ymax = 1, color = "black", fill = "cyan3", alpha = .25) + 
+  labs(title = "Number of Presentations", x = "Time (minutes)", y = "Presentations") +
+  theme_bw()
+
+df <- data.frame(x = c(rnorm(10000, 2.7, .25), rnorm(10000, 2.7, .2)))
+p2 <- ggplot(df, aes(x)) + 
+  stat_ecdf(geom = "step", na.rm = TRUE) +
+  xlim(0,3) +
+  labs(title = "Probability of Applause CDF", x = "Time (minutes)", y = "Probability") +
+  theme_bw()
+
+xt <- c()
+xt[1] <- 18
+for (i in 2:30){
+  xt[i] <- xt[i-1] + rnorm(1,-.6,.5)
+}
+dt <- data.frame(y = xt, x = seq(.1,3,.1))
+p3 <- ggplot(dt, aes(x = x, y = y)) +
+  geom_line() + 
+  labs(title = "Classmate Attention vs. Time", x = "Time (minutes)", y = "Attention (yawns)") +
+  theme_bw()
+
+  
+p4 <-  ggplot(tai.potato, aes(x = gen, y = env, fill = yield)) + 
+  geom_tile() +
+  labs(title = "Heat Map", x = "Gneration", y = "Environment")
+  theme_bw()
+``` 
+  
+```{r, echo = FALSE}
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+- As you can see, these plots are in my presentation.
+
+- There are four of them
+
+- Don't they look nice?
+
+##Meat and Potatoes
+
+```{r, echo=FALSE}
+data("nutrients.meat.fish.fowl.1959")
+meat <- ggplot(nutrients.meat.fish.fowl.1959, aes(x = fat, y = energy)) +
+  geom_point(size = 10, col = "red", shape = 25, fill = "red") +
+  geom_point(data = nutrients.meat.fish.fowl.1959, aes(x = fat - .4, y = energy  - 2),  
+             size = 10, col = "white", shape = 84)+
+  labs(x = "Fat Content", y = "Energy", title = "Meat") +
+  theme_bw()
+
+data("tai.potato")
+potato <- ggplot(tai.potato, aes(x = variety, y = yield)) + 
+  geom_point(size = 7, col = "tan3", shape = 16) + 
+  labs(x = "Potato Variety", y = "Yield", title = "Potatoes") +
+  theme_bw()
+grid.arrange(meat, potato, ncol=2)
+```
+
+##
+
+![](Raw_beef_detail.png)    ![](Potato_with_butter_detail.png)
+
+Fascinating
+
+
+
+
+##Presentation Grading
+```{r, echo = FALSE}
+n <- 100000
+mean <- 101
+sd <- 2
+binwidth = 1
+set.seed(1010101)
+df <- data.frame(x = rnorm(n, mean, sd))
+ggplot(df, aes(x = x, mean = mean, sd = sd, binwidth = binwidth, n = n)) +
+geom_histogram(aes(y=..density..), position = "dodge",binwidth = binwidth, 
+    color = "black", fill = "goldenrod1", size = 0.2) +
+stat_function(fun = function(x) dnorm(x, mean = mean, sd = sd) * binwidth,
+    color = "darkorchid1", size = 1) +
+scale_x_continuous(limits=c(91,111)) + 
+scale_y_continuous(limits=c(0,.25)) + 
+labs(title = "Presentation Grade PDF", x = "Grade", y = "Probability") +
+theme_bw()
+  
+```
+
+- Mean appears to be 101.
+
+- Low chance of scoring below a 95.
+
+##What Have We Learned??
+- ggplot
+  - geoms
+  - aesthetics
+  - functions
+  - scaling
+  - themes
+  
+- The true meaning of The Holidays
+
