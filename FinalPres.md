@@ -45,6 +45,10 @@ Presentation Grading
 ========================================================
 
 ![plot of chunk unnamed-chunk-5](FinalPres-figure/unnamed-chunk-5-1.png)
+***
+- Mean appears to be 101.
+
+- Low chance of scoring below a 95.
 
 What Have We Learned??
 ========================================================
@@ -55,4 +59,4 @@ What Have We Learned??
   - scaling
   - themes
   
-- The true meaning of Christmas
+- The true meaning of The Holidays

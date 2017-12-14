@@ -120,6 +120,10 @@ labs(title = "Presentation Grade PDF", x = "Grade", y = "Probability") +
 theme_bw()
   
 ```
+***
+- Mean appears to be 101.
+
+- Low chance of scoring below a 95.
 
 What Have We Learned??
 ========================================================
@@ -130,4 +134,4 @@ What Have We Learned??
   - scaling
   - themes
   
-- The true meaning of Christmas
+- The true meaning of The Holidays
