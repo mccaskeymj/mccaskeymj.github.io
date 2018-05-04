@@ -1,0 +1,90 @@
+Hawk Weight
+========================================================
+author: Matt McCaskey
+date: 5/4/18
+autosize: true
+
+The Data
+========================================================
+
+```{r, include = FALSE}
+library(Stat2Data)
+library(caret)
+library(DMwR)
+library(partykit)
+library(dplyr)
+set.seed(471)
+data(Hawks)
+Data <- Hawks
+Data$CaptureTime <- NULL
+Data$ReleaseTime <- NULL
+Data$BandNumber <- NULL
+summary(Data)
+nrow(Data)
+
+```
+
+I used the `Hawks` dataset from the `Stat2Data` package
+
+The variables in this dataset are: 
+
+  Month, Day, Year, Species, Age, Sex, Wing, Weight, Culmen, Hallux, Tail, StandardTail, Tarsus, WingPitFat, KeelFat, CaptureTime, ReleaseTime, BandNumber, and Crop
+
+I want to predict the weight of a given hawk.
+
+
+Data Cleaning and Selection
+========================================================
+
+First I removed the variables dealing with ID numbers and time of day.
+```{r}
+Data <- knnImputation(Data, k = 10)
+```
+
+```{r, include = FALSE}
+trainIndex <- createDataPartition(y = Data$Weight, p = .5, list = FALSE, times = 1)
+train <- Data[trainIndex, ]
+test <- Data[-trainIndex, ]
+dim(train)
+dim(test)
+null <- lm(Weight ~ 1, data = train)
+full <- lm(Weight ~ . , data = train)
+step(null, scope=list(lower=null, upper=full), direction="forward")
+```
+
+
+```{r}
+mod <- lm(formula = Weight ~ Wing + Culmen + KeelFat + Day + Species + Sex + Crop + WingPitFat, data = train)
+yhat <- predict(mod, newdata = test)
+RMSE <- sqrt(mean((test$Weight - yhat)^2))
+RMSE
+```
+
+
+
+Tree Model
+========================================================
+
+```{r, echo = FALSE}
+HawkHome <- rpart(Weight ~ ., data = train)
+plot(as.party(HawkHome))
+```
+
+Tree Model cont.
+========================================================
+
+```{r}
+yhat <- predict(HawkHome, newdata = test)
+RMSE <- sqrt(mean((test$Weight - yhat)^2))
+RMSE
+```
+
+Culmen Model
+========================================================
+
+```{r}
+CulmenMod <- lm(Weight ~ Culmen + Species, data = train)
+yhat <- predict(CulmenMod, newdata = test)
+RMSE <- sqrt(mean((test$Weight - yhat)^2))
+RMSE
+```

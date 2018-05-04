@@ -1,0 +1,65 @@
+---
+title: "Hawks"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(Stat2Data)
+library(caret)
+library(DMwR)
+library(partykit)
+```
+
+```{r}
+data(Hawks)
+
+Data <- Hawks
+Data$CaptureTime <- NULL
+Data$ReleaseTime <- NULL
+Data$BandNumber <- NULL
+Data <- knnImputation(Data, k = 10)
+summary(Data)
+nrow(Data)
+
+```
+
+```{r}
+set.seed(471)
+trainIndex <- createDataPartition(y = Data$Weight, p = .5, list = FALSE, times = 1)
+train <- Data[trainIndex, ]
+test <- Data[-trainIndex, ]
+dim(train)
+dim(test)
+null <- lm(Weight ~ 1, data = train)
+full <- lm(Weight ~ . , data = train)
+step(null, scope=list(lower=null, upper=full), direction="forward")
+
+```
+
+```{r}
+mod <- lm(formula = Weight ~ Wing + Culmen + KeelFat + Day + Species + Sex + Crop + WingPitFat, data = train)
+yhat <- predict(mod, newdata = test)
+RMSE <- sqrt(mean((test$Weight - yhat)^2))
+RMSE
+```
+```{r}
+HawkHome <- rpart(Weight ~ ., data = train)
+plot(as.party(HawkHome))
+```
+
+```{r}
+yhat <- predict(HawkHome, newdata = test)
+RMSE <- sqrt(mean((test$Weight - yhat)^2))
+RMSE
+```
+```{r}
+CulmenMod <- lm(Weight ~ Culmen + Species, data = train)
+yhat <- predict(CulmenMod, newdata = test)
+RMSE <- sqrt(mean((test$Weight - yhat)^2))
+RMSE
+```
+

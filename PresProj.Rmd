@@ -1,0 +1,41 @@
+---
+title: "Data Science Proj"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(gamclass)
+library(partykit)
+library(caret)
+```
+
+```{r}
+summary(airAccs)
+nrow(airAccs)
+Crashdata <- airAccs
+Crashdata$Deathrate <- Crashdata$Dead/Crashdata$Aboard
+Crashdata <- na.omit(Crashdata)
+Crashdata$operator <- NULL
+str(Crashdata)
+nrow(Crashdata)
+```
+
+```{r}
+set.seed(471)
+trainIndex <- createDataPartition(y = Crashdata$Deathrate, p = .5, list = FALSE, times = 1)
+train <- Crashdata[trainIndex, ]
+test <- Crashdata[-trainIndex, ]
+dim(train)
+dim(test)
+null <- lm(Deathrate ~ 1, data = Crashdata)
+full <- lm(Deathrate ~ . , data = Crashdata)
+#step(null, scope=list(lower=null, upper=full), direction="forward")
+```
+```{r}
+mod <- lm(Deathrate ~ planetype, data = Crashdata)
+```
+
